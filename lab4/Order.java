@@ -7,6 +7,7 @@ public class Order {
     private List<Dish> dishes;
     private String status;
     private int discount;
+    private double paidTotal;
 
     public Order(int number, Table table) {
         this.number = number;
@@ -33,6 +34,10 @@ public class Order {
     }
 
     public void setDiscount(int discount) {
+        if (status.equals("Оплачен")) {
+            throw new IllegalStateException(
+                    "Скидку оплаченного заказа менять нельзя");
+        }
         if (discount < 0 || discount > 50) {
             throw new IllegalArgumentException(
                     "Скидка должна быть от 0 до 50%");
@@ -49,6 +54,9 @@ public class Order {
     }
 
     public double getTotalPrice() {
+        if (status.equals("Оплачен")) {
+            return paidTotal;
+        }
         double total = 0;
         for (Dish dish : dishes) {
             total += dish.getPrice();
@@ -75,6 +83,7 @@ public class Order {
         } else if (status.equals("Готовится")) {
             status = "Подан";
         } else if (status.equals("Подан")) {
+            paidTotal = getTotalPrice();
             status = "Оплачен";
             table.release();
         } else {

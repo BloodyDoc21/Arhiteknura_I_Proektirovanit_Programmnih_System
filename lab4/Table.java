@@ -33,6 +33,10 @@ public class Table {
     }
 
     public void occupy(int guests) throws RestaurantException {
+        if (guests <= 0) {
+            throw new RestaurantException(
+                    "Количество гостей должно быть больше нуля");
+        }
         if (!free) {
             throw new RestaurantException("Столик " + number
                     + " уже занят");
